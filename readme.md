@@ -20,3 +20,6 @@ depends:
 
 ![admin.png](assets/screenshoots/admin.png)
 
+`category`提供分类设置模态对话框
+
+![selector.png](assets/screenshoots/selector.png)
