@@ -1,0 +1,5 @@
+<div class="row" id="category-models">
+    {% for key,model in models %}
+    {% component 'category-model' categories=categories[model.name] %}
+    {% endfor %}
+</div>

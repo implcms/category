@@ -1,0 +1,13 @@
+schema:
+    name: string
+    description: text
+    order: 
+        type: integer
+        default: 0
+    remark: text
+    parent_id: integer
+    _dropIfExist: true
+default:
+    columns:
+    - name
+    

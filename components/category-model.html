@@ -1,0 +1,18 @@
+<div class="col-md-3">
+    <div class="card mb-4 o-hidden">
+        <div class="card-header">
+            {{model.label}}
+        </div>
+        <div class="card-body">
+            <div class="input-group mb-3">
+                <input
+                impl-api="category@main.create"
+                impl-data="model:{{model.name}}"
+                type="text" name="name" class="form-control" placeholder="请输入分类名称，按Enter保存">
+            </div>
+            <div class="dd" data-id="{{key}}" id="{{model.name}}" data-model="{{model.name}}">
+                {% component 'cat-tree'%}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+layout: admin@default
+url: admin/category
+layoutData:
+    pageTitle: 分类管理
+data:
+    models:
+        api: category@main.category-config
+        load: true
+    categories:
+        api: category@main.categories
+        load: true
+styles:
+    - main
+scripts:
+    - category@nestable/jquery.nestable 
+    - main

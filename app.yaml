@@ -1,0 +1,12 @@
+name: 分类
+description: 提供无限分类解决方案
+email: gheniablez@gmail.com
+depends:
+  admin: 
+    menus:
+      dashboard:
+        sub_menus:
+          -
+            lable: 分类管理
+            icon: i-Folder-Archive
+            url: 'admin/category'

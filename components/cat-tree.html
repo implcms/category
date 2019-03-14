@@ -1,0 +1,17 @@
+<ol class="dd-list">
+{% for cat in categories %}
+<li class="dd-item" data-id="{{cat.id}}">
+    <div class="dd3-content dd-handle">
+        <div style="display:block">{{cat.name}}</div>
+    </div>
+    <span class="cursor" style="position: absolute;right: 11px;top: 11px;"
+    impl-api="category@main.delete"
+    impl-confirm="确定要删除嚒?"
+    impl-data="container:cat-tree-{{key}},id:{{cat.id}}"
+    ><i impl-for="parent" class="i-Close"></i></span>
+    {% if cat.children %}
+    {% component 'cat-tree' categories=cat.children%}
+    {% endif %}
+</li>
+{% endfor %}
+</ol>

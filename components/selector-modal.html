@@ -1,0 +1,36 @@
+<div class="modal fade" id="custom-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">选择{{input.title?input.title:''}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form name="category-selector-form" impl-reset="false">
+                	{% set categories = categories?categories:api('category@main.model-categories')%}
+                	{% if input.type == "category2" %}
+	                	{% for cat in categories %}
+	                		<p><span class="mr-2" style="font-size: 15px;font-weight:700">{{cat.name}}:</span>
+	                		{% if cat.children %}
+	                		{% component 'radio-list'%}
+							{% endif %}
+							</p>
+	                	{% endfor %}
+	                {% elseif input.type == "tag"%}
+	                	{% component 'selector-checkbox-list' %}
+                	{% endif %}
+                	<input type="hidden" name="modelConfig" value="{{input.modelConfig}}" />
+                	<input type="hidden" name="relation" value="{{input.relation}}" />
+                	<input type="hidden" name="id" value="{{input.id}}" />
+                	<input type="hidden" name="type" value="{{input.type}}" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button impl-success='$("#custom-modal").modal("toggle")' impl-form="category-selector-form" impl-api="category@main.bind" type="button" class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+</div>

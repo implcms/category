@@ -1,0 +1,7 @@
+{% for index,cat in categories %}
+<label class="checkbox checkbox-primary mr-2" style="display:inline-block">
+    <input name="categories[{{cat.id}}]" value="{{cat.id}}" {{cat.checked?'checked':''}} type="checkbox">
+    <span>{{cat.name}}</span>
+    <span class="checkmark"></span>
+</label>
+{% endfor %}
