@@ -49,6 +49,8 @@ class MainController{
      * https://stackoverflow.com/questions/17597780/hierarchy-tree-to-get-parent-slug/17598761#17598761
      */
     private function makeCatTree($categories){
+    	
+    	$categories = json_decode(json_encode($categories), true);
         
         // First of all we sort the categories array by parent id!
         // We need the parent to be created before teh children after all?
@@ -111,7 +113,7 @@ class MainController{
         	if(in_array($category->id,$oldCats)){
         		$category->checked = true;
         	}
-        	$_categories[] = (array)$category;
+        	$_categories[] = $category;
         }
         $categories = $this->makeCatTree($_categories);
 
@@ -128,17 +130,17 @@ class MainController{
             "name"=>"名称必填哦",
             "model"=>"模型配置必填哦"
         ];
-        if(!vld($errors,$rules)){
+        if(!validator($errors,$rules)){
             return mr(null,-1,$errors[0]);
         }
-        list($id,$err) = model('category')->create(['name'=>$input['name'],'model'=>$input['model']]);
+        $err = model('category')->create(['name'=>$input['name'],'model'=>$input['model']]);
         if($err){
             return mr(null,-2,$err);
         }
         
         $data = mr(null);
         
-        $categories = model('category')->orderBy('order',"ASC")->where('model',$input['model'])->get(true);
+        $categories = model('category')->orderBy('order',"ASC")->where('model',$input['model'])->get();
         
         $categories = $this->makeCatTree($categories);
         
@@ -158,7 +160,7 @@ class MainController{
         if($category){
             $allCat = model('category')->where('model',$category->model)->get();
             $this->recursiveDeleteCat($allCat,$category);
-            $categories = model('category')->orderBy('order',"ASC")->where('model',$category->model)->get(true);
+            $categories = model('category')->orderBy('order',"ASC")->where('model',$category->model)->get();
             $categories = $this->makeCatTree($categories);
             $data = mr(null,1,"删除成功");
             $data["#".$category->model] = \Web::component('category@cat-tree',['categories'=>$categories]);
@@ -177,18 +179,22 @@ class MainController{
      * 排序分类
      * @param json|排序后的分类数据|是
      */
-    public function apiReorderBy(){
+    public function apiReorder(){
         input('json',$cat);
         $i = 0;
-        $this->reorderCat($i,json_decode($cat,true));
+        $err = $this->reorderCat($i,json_decode($cat,true));
+        if($err){
+        	return mr(null,-1,$err);
+        }
+        return mr(null);
     }
     
     private function reorderCat(&$i,$cats,$parent_id = 0){
         foreach ($cats as $index=>$cat) {
-            $catModel = model('category')->find($cat['id']);
-            $catModel->parent_id = $parent_id;
-            $catModel->order = $i;
-            $catModel->save();
+            $err = model('category')->where("id",$cat["id"])->update(["parent_id"=>$parent_id,"order"=>$i]);
+            if($err){
+            	return $err;
+            }
             $i = $i + 1;
             if(isset($cat['children']) && count($cat['children'])>0){
                 $this->reorderCat($i,$cat['children'],$cats[$index]['id']);
