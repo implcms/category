@@ -5,8 +5,13 @@ schema:
         type: integer
         default: 0
     remark: text
-    parent_id: integer
-    _dropIfExist: true
+    parent_id:
+        type: integer
+        default: 0
+    model: string|32
+    model_id:
+        type: integer
+        default: 0
 default:
     columns:
     - name

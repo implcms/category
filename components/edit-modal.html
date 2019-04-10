@@ -1,0 +1,27 @@
+<div class="modal fade" id="custom-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{input.label}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <div class="input-group mb-3">
+                    <input
+                        impl-api="category@main.create"
+                        impl-data="model:{{input.model}},model_id:{{input.model_id}}"
+                        type="text" name="name" class="form-control" placeholder="请输入分类名称，按Enter保存">
+                    </div>
+                    <div class="dd" data-id="{{input.model_id}}" id="{{input.model}}" data-model="{{input.model}}">
+                        {% set categories = api('category@main.categories',{'filter':{'model':input.model,'model_id':input.model_id}})%}
+                        {% component 'cat-tree' categories=categories[input.model]%}
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">完成</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -10,7 +10,6 @@ class MainController{
      * 分类注册列表
      */
     public function apiCategoryConfig($param){
-     
         $allModels = [];
 
         foreach (cms('apps') as $key => $value) {
@@ -28,12 +27,17 @@ class MainController{
      */
     public function apiCategories($param){
         $categories = [];
-        input("filter",$filter);
+        if(isset($param['filter']) && is_array($param['filter'])){
+            $filter = $param['filter'];
+        }else{
+            input("filter",$filter);
+        }
         $records = model('category');
         foreach ($filter as $key => $value) {
         	$records = $records->where($key,$value);
         }
         $records = $records->orderBy('order',"ASC")->get();
+
         foreach ($records as $value) {
             $categories[$value->model][$value->id] = (array)$value;
         }
@@ -108,13 +112,22 @@ class MainController{
     	
     	$_categories = [];
     	
-    	$categories = model('category')->orderBy('order',"ASC")->where('model',explode(".",$modelConfig)[0]."-".$relation)->get();
+        $categories = model('category')->orderBy('id',"desc");
+        
+        if(intval(input('model_id'))){
+            $categories = $categories->where("model_id",input('model_id'));
+        }
+        $categories = $categories->where('model',explode(".",$modelConfig)[0]."-".$relation)->get();
+        
         foreach($categories as $category){
         	if(in_array($category->id,$oldCats)){
         		$category->checked = true;
-        	}
+        	}else{
+                $category->checked = false;
+            }
         	$_categories[] = $category;
         }
+        
         $categories = $this->makeCatTree($_categories);
 
         return mr($categories);
@@ -133,14 +146,22 @@ class MainController{
         if(!validator($errors,$rules)){
             return mr(null,-1,$errors[0]);
         }
-        $err = model('category')->create(['name'=>$input['name'],'model'=>$input['model']]);
+        $err = model('category')->create([
+            'name'=>$input['name'],
+            'model'=>$input['model'],
+            'model_id'=>input('model_id')
+        ]);
         if($err){
             return mr(null,-2,$err);
         }
         
         $data = mr(null);
         
-        $categories = model('category')->orderBy('order',"ASC")->where('model',$input['model'])->get();
+        $categories = model('category')->orderBy('order',"ASC");
+        if(intval(input('model_id'))>0){
+            $categories->where("model_id",input('model_id'));
+        }
+        $categories = $categories->where('model',$input['model'])->get();
         
         $categories = $this->makeCatTree($categories);
         
@@ -160,7 +181,12 @@ class MainController{
         if($category){
             $allCat = model('category')->where('model',$category->model)->get();
             $this->recursiveDeleteCat($allCat,$category);
-            $categories = model('category')->orderBy('order',"ASC")->where('model',$category->model)->get();
+
+            $categories = model('category')->orderBy('order',"ASC");
+            if($category->model_id>0){
+                $categories = $categories->where("model_id",$category->model_id);
+            }
+            $categories = $categories->where('model',$category->model)->get();
             $categories = $this->makeCatTree($categories);
             $data = mr(null,1,"删除成功");
             $data["#".$category->model] = \Web::component('category@cat-tree',['categories'=>$categories]);
@@ -173,7 +199,7 @@ class MainController{
                 $this->recursiveDeleteCat($allCat,$cat);
             }
         }
-        $category->delete();
+        model('category')->where("id",$category->id)->delete();
     }
     /**
      * 排序分类

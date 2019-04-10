@@ -1,4 +1,4 @@
-{% for chiled_cat in cat.children %}
+{% for chiled_cat in categories %}
 	<label class="radio radio-outline-primary" style="display:inline-block;margin-right:10px">
         <input type="radio" name="categories[{{cat.id}}][]" {{chiled_cat.checked?'checked':''}} value="{{chiled_cat.id}}">
         <span>{{chiled_cat.name}}</span>

@@ -1,6 +1,6 @@
 <button type="button" 
 impl-api="#" 
-impl-data="id:{{record.id}},modelConfig:{{modelConfig}},relation:{{action.relation}},title:{{action.label}},type:{{action.type?action.type:'tags'}}" 
+impl-data="model_id:{{attribute(record,action.filterCloumn)}},id:{{record.id}},modelConfig:{{modelConfig}},relation:{{action.relation}},title:{{action.label}},type:{{action.type?action.type:'tags'}}" 
 impl-components="#modal-container:category@selector-modal" 
 class="btn btn-outline-info btn-sm">
 {{action.label}}

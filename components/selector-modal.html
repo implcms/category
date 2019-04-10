@@ -14,10 +14,12 @@
 	                	{% for cat in categories %}
 	                		<p><span class="mr-2" style="font-size: 15px;font-weight:700">{{cat.name}}:</span>
 	                		{% if cat.children %}
-	                		{% component 'radio-list'%}
+	                		{% component 'radio-list' categories=cat.children%}
 							{% endif %}
 							</p>
-	                	{% endfor %}
+                        {% endfor %}
+                    {% elseif input.type == "category1"%}
+                        {% component 'radio-list' %}
 	                {% elseif input.type == "tag"%}
 	                	{% component 'selector-checkbox-list' %}
                 	{% endif %}
